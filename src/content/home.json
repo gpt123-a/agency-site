@@ -1,0 +1,67 @@
+{
+  "sections": [
+    {
+      "type": "hero",
+      "data": {
+        "badge": "AI Automation Agency",
+        "title": "Turn Missed Calls Into Booked Jobs",
+        "subtitle": "We build Digital Front Doors that answer phones, book appointments, and close deals while you sleep.",
+        "buttonText": "Get a Free Audit"
+      }
+    },
+    {
+      "type": "features",
+      "data": {
+        "title": "Why You Are Losing Money",
+        "subtitle": "If you don't answer in 5 minutes, the lead is gone. We fix that.",
+        "items": [
+          {
+            "title": "Missed Call Text Back",
+            "desc": "Our bot texts them instantly when you miss a call.",
+            "icon": "MessageSquare"
+          },
+          {
+            "title": "24/7 Booking Bot",
+            "desc": "Let customers book appointments directly on your site.",
+            "icon": "Calendar"
+          },
+          {
+            "title": "Review Automation",
+            "desc": "Automatically ask happy customers for 5-star reviews.",
+            "icon": "Star"
+          }
+        ]
+      }
+    },
+    {
+      "type": "pricing",
+      "data": {
+        "title": "Simple, Transparent Pricing",
+        "subtitle": "No hidden fees. Pause or cancel anytime.",
+        "cards": [
+          {
+            "name": "Starter",
+            "price": "$297",
+            "features": ["Missed Call Text Back", "Google Review Automation", "Web Chat Widget", "Mobile App Access"],
+            "buttonText": "Start Free Trial",
+            "popular": false
+          },
+          {
+            "name": "Growth",
+            "price": "$497",
+            "features": ["Everything in Starter", "24/7 Booking Bot", "AI Text Responses", "CRM Integration"],
+            "buttonText": "Get Started",
+            "popular": true
+          },
+          {
+            "name": "Professional",
+            "price": "$997",
+            "features": ["Everything in Growth", "Custom Workflows", "Dedicated Account Manager", "Priority Support"],
+            "buttonText": "Contact Us",
+            "popular": false
+          }
+        ]
+      }
+    }
+  ]
+}
