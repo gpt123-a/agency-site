@@ -44,7 +44,7 @@ const handleAddLead = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsModalOpen(false); // Close modal instantly
 
     // 2. Send to server in background
-    await addLead(formData);
+    await addLead(null, formData); 
     
     // 3. Silently refresh the real data after 3 seconds to confirm
     setTimeout(() => {
