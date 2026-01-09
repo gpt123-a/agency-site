@@ -5,20 +5,17 @@ import { submitContactForm } from "@/app/actions";
 
 export const Contact = () => {
   const formRef = useRef<HTMLFormElement>(null);
-  const [state, formAction, isPending] = useActionState(
-    async (prevState: any, formData: FormData) => {
-      const result = await submitContactForm(formData);
-      return result;
-    },
-    { success: false, message: "" }
-  );
+
+  // FIX: Pass the server action directly. 
+  // We removed the async wrapper that was causing the "Argument" error.
+  const [state, formAction, isPending] = useActionState(submitContactForm, { success: false });
 
   // Reset form on successful submission
   useEffect(() => {
-    if (state.success && formRef.current) {
+    if (state?.success && formRef.current) {
       formRef.current.reset();
     }
-  }, [state.success]);
+  }, [state?.success]);
 
   return (
     <section id="contact" className="py-24 bg-slate-50">
@@ -84,15 +81,13 @@ export const Contact = () => {
                   className="w-full bg-slate-900 text-white py-4 rounded-lg font-bold hover:bg-slate-800 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send size={18} />
-                  {isPending ? "Sending...." : "Send Message"}
+                  {isPending ? "Sending..." : "Send Message"}
                 </button>
-                {state.message && (
-                  <p className={`text-center text-sm mt-4 ${
-                    state.success 
-                      ? "text-green-600" 
-                      : "text-red-600"
-                  }`}>
-                    {state.message}
+                
+                {/* FIX: Updated to check state.success directly since we simplified the server action */}
+                {state?.success && (
+                  <p className="text-center text-sm mt-4 text-green-600">
+                    Message sent successfully! We'll be in touch.
                   </p>
                 )}
               </form>
