@@ -9,10 +9,9 @@ export type Lead = {
   "Review Link"?: string;
 };
 
-// --- FUNCTION 1: THE READER (Uses your Vercel Secret) ---
+// --- FUNCTION 1: THE READER ---
 export async function fetchLeads() {
   try {
-    // Uses the Environment Variable you set in Vercel
     const url = process.env.N8N_READ_LEADS_WEBHOOK_URL;
     if (!url) console.error("MISSING VAR: N8N_READ_LEADS_WEBHOOK_URL");
 
@@ -33,7 +32,6 @@ export async function fetchLeads() {
     const data = await response.json();
     const rawLeads = data.leads || data || [];
     
-    // Assign Row Numbers automatically
     const leads = Array.isArray(rawLeads) 
       ? rawLeads.map((lead: any, index: number) => ({
           ...lead,
@@ -48,7 +46,7 @@ export async function fetchLeads() {
   }
 }
 
-// --- FUNCTION 2: THE WRITER (Uses your Vercel Secret) ---
+// --- FUNCTION 2: THE WRITER ---
 export async function updateLeadStatus(rowNumber: number) {
   try {
     const url = process.env.N8N_UPDATE_STATUS_WEBHOOK_URL;
@@ -73,9 +71,7 @@ export async function updateLeadStatus(rowNumber: number) {
   }
 }
 
-// --- FUNCTION 3: THE CREATOR (Fixed Name & Link) ---
-// FIX: Renamed back to "submitContactForm" so the Contact page works
-// FIX: Added _prevState to handle React 19 form actions
+// --- FUNCTION 3: THE CREATOR (Primary Name) ---
 export async function submitContactForm(_prevState: any, formData: FormData) {
   const name = formData.get("name");
   const email = formData.get("email");
@@ -83,8 +79,6 @@ export async function submitContactForm(_prevState: any, formData: FormData) {
   const date = new Date().toLocaleDateString();
 
   try {
-    // We construct the "Add Lead" URL using your Read Lead URL base
-    // This is a smart hack so we don't need a 3rd env variable
     const readUrl = process.env.N8N_READ_LEADS_WEBHOOK_URL || "";
     const baseUrl = readUrl.replace("/webhook/read-leads", "");
     const addUrl = `${baseUrl}/webhook/add-lead`;
@@ -105,3 +99,6 @@ export async function submitContactForm(_prevState: any, formData: FormData) {
     return { success: false };
   }
 }
+
+// --- FIX: THE ALIAS (Satisfies Dashboard Page) ---
+export const addLead = submitContactForm;
