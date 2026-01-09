@@ -1,5 +1,6 @@
 "use server";
 
+// FIX: Added "Message" to the allowed types
 export type Lead = {
   row_number: number;
   Date: string;
@@ -7,6 +8,7 @@ export type Lead = {
   Email: string;
   Status: string;
   "Review Link"?: string;
+  Message?: string; 
 };
 
 // --- FUNCTION 1: THE READER ---
@@ -71,7 +73,7 @@ export async function updateLeadStatus(rowNumber: number) {
   }
 }
 
-// --- FUNCTION 3: THE CREATOR (Primary Name) ---
+// --- FUNCTION 3: THE CREATOR ---
 export async function submitContactForm(_prevState: any, formData: FormData) {
   const name = formData.get("name");
   const email = formData.get("email");
@@ -100,5 +102,5 @@ export async function submitContactForm(_prevState: any, formData: FormData) {
   }
 }
 
-// --- FIX: THE ALIAS (Satisfies Dashboard Page) ---
+// --- ALIAS FOR COMPATIBILITY ---
 export const addLead = submitContactForm;
