@@ -1,108 +1,96 @@
 "use server";
 
-interface ContactFormData {
-  name: string;
-  email: string;
-  message: string;
-}
+export type Lead = {
+  row_number: number;
+  Date: string;
+  Name: string;
+  Email: string;
+  Status: string;
+  "Review Link"?: string;
+};
 
-interface ActionResult {
-  success: boolean;
-  message: string;
-}
-
-export async function submitContactForm(
-  formData: FormData
-): Promise<ActionResult> {
+// --- FUNCTION 1: THE READER (Fetches leads & Calculates IDs) ---
+export async function fetchLeads() {
   try {
-    // Extract form data
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const message = formData.get("message") as string;
-
-    // Basic validation
-    if (!name || !email || !message) {
-      return {
-        success: false,
-        message: "All fields are required.",
-      };
-    }
-
-    // Email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return {
-        success: false,
-        message: "Please enter a valid email address.",
-      };
-    }
-
-    // Get environment variables
-    const webhookUrl = process.env.N8N_WEBHOOK_URL;
-    const apiKey = process.env.N8N_API_KEY;
-
-    if (!webhookUrl || !apiKey) {
-      console.error("Missing environment variables: N8N_WEBHOOK_URL or N8N_API_KEY");
-      return {
-        success: false,
-        message: "Server configuration error. Please try again later.",
-      };
-    }
-
-    // POST to n8n webhook
-    const response = await fetch(webhookUrl, {
-      method: "POST",
+    const response = await fetch(process.env.N8N_READ_LEADS_WEBHOOK_URL!, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": apiKey,
+        "x-api-key": process.env.N8N_API_KEY!,
+        "ngrok-skip-browser-warning": "true",
       },
-      body: JSON.stringify({
-        name: name.trim(),
-        email: email.trim(),
-        message: message.trim(),
-      }),
+      cache: "no-store",
     });
 
-    // Handle response
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("n8n webhook error:", response.status, errorData);
-      
-      if (response.status === 401) {
-        return {
-          success: false,
-          message: "Authentication failed. Please try again later.",
-        };
-      }
-
-      return {
-        success: false,
-        message: "Failed to submit form. Please try again.",
-      };
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.json().catch(() => ({}));
-
-    if (data.success) {
-      return {
-        success: true,
-        message: "Form submitted successfully!",
-      };
-    }
-
-    return {
-      success: false,
-      message: data.error || "Failed to submit form. Please try again.",
-    };
+    const data = await response.json();
+    
+    // Get the raw list
+    const rawLeads = data.leads || data || [];
+    
+    // 👇 SMART FIX: We manually assign Row Numbers (Index + 2)
+    // Index 0 becomes Row 2, Index 1 becomes Row 3, etc.
+    const leads = Array.isArray(rawLeads) 
+      ? rawLeads.map((lead: any, index: number) => ({
+          ...lead,
+          row_number: index + 2 
+        }))
+      : [];
+    
+    return { success: true, leads };
   } catch (error) {
-    console.error("Error submitting contact form:", error);
-    return {
-      success: false,
-      message: "An unexpected error occurred. Please try again later.",
-    };
+    console.error("Error fetching leads:", error);
+    return { success: false, message: "Failed to fetch leads" };
   }
 }
 
+// --- FUNCTION 2: THE WRITER (Updates the status) ---
+export async function updateLeadStatus(rowNumber: number) {
+  try {
+    const response = await fetch("http://localhost:5678/webhook/update-status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ row_number: rowNumber }),
+      cache: "no-store",
+    });
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
+    return { success: true, message: "Status updated successfully" };
+  } catch (error) {
+    console.error("Error updating status:", error);
+    return { success: false, message: "Failed to update status" };
+  }
+}
 
+// --- FUNCTION 3: THE CREATOR (Adds new leads) ---
+export async function addLead(formData: FormData) {
+  const name = formData.get("name");
+  const email = formData.get("email");
+  const message = formData.get("message");
+  const date = new Date().toLocaleDateString();
+
+  try {
+    const response = await fetch("http://localhost:5678/webhook/add-lead", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, message, date }),
+      cache: "no-store",
+    });
+
+    if (!response.ok) throw new Error("Failed to add lead");
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding lead:", error);
+    return { success: false };
+  }
+}
