@@ -9,14 +9,18 @@ export type Lead = {
   "Review Link"?: string;
 };
 
-// --- FUNCTION 1: THE READER (Fetches leads & Calculates IDs) ---
+// --- FUNCTION 1: THE READER (Uses your Vercel Secret) ---
 export async function fetchLeads() {
   try {
-    const response = await fetch(process.env.N8N_READ_LEADS_WEBHOOK_URL!, {
+    // Uses the Environment Variable you set in Vercel
+    const url = process.env.N8N_READ_LEADS_WEBHOOK_URL;
+    if (!url) console.error("MISSING VAR: N8N_READ_LEADS_WEBHOOK_URL");
+
+    const response = await fetch(url!, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.N8N_API_KEY!,
+        "x-api-key": process.env.N8N_API_KEY || "",
         "ngrok-skip-browser-warning": "true",
       },
       cache: "no-store",
@@ -27,12 +31,9 @@ export async function fetchLeads() {
     }
 
     const data = await response.json();
-    
-    // Get the raw list
     const rawLeads = data.leads || data || [];
     
-    // 👇 SMART FIX: We manually assign Row Numbers (Index + 2)
-    // Index 0 becomes Row 2, Index 1 becomes Row 3, etc.
+    // Assign Row Numbers automatically
     const leads = Array.isArray(rawLeads) 
       ? rawLeads.map((lead: any, index: number) => ({
           ...lead,
@@ -47,10 +48,12 @@ export async function fetchLeads() {
   }
 }
 
-// --- FUNCTION 2: THE WRITER (Updates the status) ---
+// --- FUNCTION 2: THE WRITER (Uses your Vercel Secret) ---
 export async function updateLeadStatus(rowNumber: number) {
   try {
-    const response = await fetch("http://localhost:5678/webhook/update-status", {
+    const url = process.env.N8N_UPDATE_STATUS_WEBHOOK_URL;
+    
+    const response = await fetch(url!, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,15 +73,23 @@ export async function updateLeadStatus(rowNumber: number) {
   }
 }
 
-// --- FUNCTION 3: THE CREATOR (Adds new leads) ---
-export async function addLead(formData: FormData) {
+// --- FUNCTION 3: THE CREATOR (Fixed Name & Link) ---
+// FIX: Renamed back to "submitContactForm" so the Contact page works
+// FIX: Added _prevState to handle React 19 form actions
+export async function submitContactForm(_prevState: any, formData: FormData) {
   const name = formData.get("name");
   const email = formData.get("email");
   const message = formData.get("message");
   const date = new Date().toLocaleDateString();
 
   try {
-    const response = await fetch("http://localhost:5678/webhook/add-lead", {
+    // We construct the "Add Lead" URL using your Read Lead URL base
+    // This is a smart hack so we don't need a 3rd env variable
+    const readUrl = process.env.N8N_READ_LEADS_WEBHOOK_URL || "";
+    const baseUrl = readUrl.replace("/webhook/read-leads", "");
+    const addUrl = `${baseUrl}/webhook/add-lead`;
+
+    const response = await fetch(addUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
