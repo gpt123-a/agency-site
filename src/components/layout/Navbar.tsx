@@ -19,6 +19,12 @@ export const Navbar = () => {
           <Link href="#features" className="text-sm font-medium text-slate-600 hover:text-blue-600 hidden md:block transition">
             How it Works
           </Link>
+
+          {/* NEW: Client Login Link */}
+          <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition">
+            Client Login
+          </Link>
+
           <Link href="/book" className="bg-slate-900 text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition">
             Book a Demo
           </Link>
