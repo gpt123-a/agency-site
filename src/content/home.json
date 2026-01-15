@@ -3,31 +3,31 @@
     {
       "type": "hero",
       "data": {
-        "badge": "AI Automation Agency",
-        "title": "Turn Missed Calls Into Booked Jobs",
-        "subtitle": "We build Digital Front Doors that answer phones, book appointments, and close deals while you sleep.",
-        "buttonText": "Get a Free Audit"
+        "badge": "Enterprise-Grade Infrastructure",
+        "title": "Stop Renting Marketing. Start Owning Infrastructure.",
+        "subtitle": "We don't sell monthly services. We install GrowthOS™—a proprietary 9-point revenue engine that runs on your server, captures your leads, and automates your business.",
+        "buttonText": "Book Your Infrastructure Audit"
       }
     },
     {
       "type": "features",
       "data": {
-        "title": "Why You Are Losing Money",
-        "subtitle": "If you don't answer in 5 minutes, the lead is gone. We fix that.",
+        "title": "Inside the GrowthOS Architecture",
+        "subtitle": "A complete ecosystem designed to automate the three stages of revenue.",
         "items": [
           {
-            "title": "Missed Call Text Back",
-            "desc": "Our bot texts them instantly when you miss a call.",
+            "title": "Acquisition Core",
+            "desc": "Capture every opportunity. Includes The Lead Trap, Referral Engine, and Lazarus Database Reactivation.",
             "icon": "MessageSquare"
           },
           {
-            "title": "24/7 Booking Bot",
-            "desc": "Let customers book appointments directly on your site.",
+            "title": "Conversion Core",
+            "desc": "Close deals while you sleep. Includes The Closer, The Badger (30-day follow-up), and Reputation Engine.",
             "icon": "Calendar"
           },
           {
-            "title": "Review Automation",
-            "desc": "Automatically ask happy customers for 5-star reviews.",
+            "title": "Retention Core",
+            "desc": "Fulfillment without chaos. Includes The Silent Operator, Warranty Checkups, and Weekly Scorecards.",
             "icon": "Star"
           }
         ]
@@ -36,29 +36,15 @@
     {
       "type": "pricing",
       "data": {
-        "title": "Simple, Transparent Pricing",
-        "subtitle": "No hidden fees. Pause or cancel anytime.",
+        "title": "The GrowthOS License",
+        "subtitle": "One-time installation. Low monthly maintenance.",
         "cards": [
           {
-            "name": "Starter",
-            "price": "$297",
-            "features": ["Missed Call Text Back", "Google Review Automation", "Web Chat Widget", "Mobile App Access"],
-            "buttonText": "Start Free Trial",
-            "popular": false
-          },
-          {
-            "name": "Growth",
+            "name": "GrowthOS Complete",
             "price": "$497",
-            "features": ["Everything in Starter", "24/7 Booking Bot", "AI Text Responses", "CRM Integration"],
-            "buttonText": "Get Started",
+            "features": ["$2,500 One-Time Setup Fee", "Full 9-Workflow Installation", "White Glove Onboarding", "No-Lead-Left-Behind Guarantee", "Dedicated Server Monitoring"],
+            "buttonText": "Apply for Installation",
             "popular": true
-          },
-          {
-            "name": "Professional",
-            "price": "$997",
-            "features": ["Everything in Growth", "Custom Workflows", "Dedicated Account Manager", "Priority Support"],
-            "buttonText": "Contact Us",
-            "popular": false
           }
         ]
       }
